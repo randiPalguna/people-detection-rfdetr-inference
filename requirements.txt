@@ -1,0 +1,7 @@
+torch
+opencv-python
+onnxruntime-gpu[cuda,cudnn]
+numpy
+supervision
+yt-dlp
+trackers
