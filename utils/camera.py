@@ -5,12 +5,11 @@ class VideoStream:
     def __init__(self, source, yt_livestream=False):
         if yt_livestream:
             ydl_opts = {
-                'format': 'best[height<=720]/best/bestvideo/mhtml',
+                'format': 'bestvideo',
                 'quiet': True,
                 'noplaylist': True,
                 'live_from_start': False,
                 'no_warnings': True,
-                'cookiesfrombrowser': ('firefox',),
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:

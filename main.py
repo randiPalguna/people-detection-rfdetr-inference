@@ -14,11 +14,11 @@ def main():
         conf_threshold=Config.CONFIDENCE_THRESHOLD,
         target_class_ids=Config.TARGET_CLASS_IDS,
     )
-    tracker = Tracker(tracker=Config.TRACKER)
+    tracker = Tracker(activate=Config.ACTIVATE_TRACKER, tracker=Config.TRACKER)
     display_size = (Config.DISPLAY_WIDTH, Config.DISPLAY_HEIGHT)
 
     while True:
-        time.sleep(0.05)
+        # time.sleep(0.05)
         frame = camera.read()
         if frame is None:
             break
@@ -26,7 +26,7 @@ def main():
         frame = cv2.resize(frame, display_size)
 
         detections = model.predict(frame, display_size)
-        annotated_frame = tracker.process_and_draw(frame, detections)
+        annotated_frame = tracker.track_and_draw(frame, detections)
 
         cv2.imshow('RF-DETR Test', annotated_frame)
 

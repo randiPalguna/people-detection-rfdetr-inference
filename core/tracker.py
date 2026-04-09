@@ -3,7 +3,8 @@ import supervision as sv
 from trackers import ByteTrackTracker, SORTTracker, OCSORTTracker
 
 class Tracker:
-    def __init__(self, tracker):
+    def __init__(self, activate, tracker):
+        self.activate = activate
         if tracker == "ByteTrack":
             self.tracker = ByteTrackTracker(
                 lost_track_buffer = 30,
@@ -41,20 +42,26 @@ class Tracker:
             text_padding=1
         )
 
-    def process_and_draw(self, frame, detections):
-        # Update tracker
-        tracked_detections = self.tracker.update(detections=detections)
-        
-        labels = [
-            f"#{tracker_id} {conf:.2f}" 
-            for tracker_id, conf in zip(tracked_detections.tracker_id, tracked_detections.confidence) 
-        ]
+    def track_and_draw(self, frame, detections):
+        if self.activate:
+            # Update tracker
+            detections = self.tracker.update(detections=detections)
+            
+            labels = [
+                f"#{tracker_id} {conf:.2f}" 
+                for tracker_id, conf in zip(detections.tracker_id, detections.confidence) 
+            ]
+        else:
+            labels = [
+                f"{conf:.2f}" 
+                for conf in detections.confidence 
+            ]            
 
-        annotated = self.box_annotator.annotate(scene=frame.copy(), detections=tracked_detections)
-        annotated = self.label_annotator.annotate(scene=annotated, detections=tracked_detections, labels=labels)
+        annotated = self.box_annotator.annotate(scene=frame.copy(), detections=detections)
+        annotated = self.label_annotator.annotate(scene=annotated, detections=detections, labels=labels)
 
         # Draw Counter
-        text = f"Total People: {len(tracked_detections)}"
+        text = f"Total People: {len(detections)}"
         cv2.putText(
             img=annotated, text=text, org=(20, 50),
             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.0,
