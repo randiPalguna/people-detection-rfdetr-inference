@@ -38,7 +38,7 @@ class Tracker:
         )
         self.label_annotator = sv.LabelAnnotator(
             text_thickness=1,
-            text_scale=0.5,
+            text_scale=0.4,
             text_padding=1
         )
 
@@ -55,7 +55,7 @@ class Tracker:
             labels = [
                 f"{conf:.2f}" 
                 for conf in detections.confidence 
-            ]            
+            ]        
 
         annotated = self.box_annotator.annotate(scene=frame.copy(), detections=detections)
         annotated = self.label_annotator.annotate(scene=annotated, detections=detections, labels=labels)
